@@ -25,7 +25,8 @@ describe('buildSessionQueue', () => {
       facts[key] = { a: 5, b, attempts: [], mastery: 'mastered', lastSeen: '2026-07-01' };
     }
     const queue = buildSessionQueue(6, facts, fixedRng());
-    const reviewCards = queue.filter(card => card.a === 5 || card.b === 5);
+    // Cards from OTHER mastered tables (a=5 specifically, not current table 6)
+    const reviewCards = queue.filter(card => card.a === 5);
     expect(reviewCards.length).toBeGreaterThan(0);
     expect(reviewCards.length).toBeLessThanOrEqual(Math.round(SESSION_SIZE * 0.25));
   });
@@ -37,5 +38,17 @@ describe('buildSessionQueue', () => {
     const queue = buildSessionQueue(4, facts, fixedRng());
     const learningCount = queue.filter(card => card.key === learningKey).length;
     expect(learningCount).toBeGreaterThan(1);
+  });
+
+  it('returns SESSION_SIZE cards even when current table is fully mastered', () => {
+    const facts: Record<string, FactState> = {};
+    // Mark all facts in the current table (table 3) as mastered
+    for (let b = 2; b <= 12; b++) {
+      const key = factKeyFor(3, b);
+      facts[key] = { a: 3, b, attempts: [], mastery: 'mastered', lastSeen: '2026-07-01' };
+    }
+    // Ensure no other table has mastered facts (so reviewPicks falls back to sortedCurrent)
+    const queue = buildSessionQueue(3, facts, fixedRng());
+    expect(queue).toHaveLength(SESSION_SIZE);
   });
 });

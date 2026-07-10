@@ -56,11 +56,9 @@ export function buildSessionQueue(
     key: factKeyFor(a, b),
   }));
 
-  const sortedCurrent = [...currentFacts]
-    .filter(card => facts[card.key]?.mastery !== 'mastered')
-    .sort(
-      (x, y) => priorityFor(facts[x.key]?.mastery) - priorityFor(facts[y.key]?.mastery)
-    );
+  const sortedCurrent = [...currentFacts].sort(
+    (x, y) => priorityFor(facts[x.key]?.mastery) - priorityFor(facts[y.key]?.mastery)
+  );
   const currentPicks = repeatToLength(sortedCurrent, currentCount);
 
   const masteredFacts: QueueCard[] = Object.entries(facts)
