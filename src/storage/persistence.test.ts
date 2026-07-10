@@ -41,4 +41,25 @@ describe('persistence', () => {
     const imported = importStateJson(json);
     expect(imported.facts['4-4'].mastery).toBe('mastered');
   });
+
+  it('importStateJson throws (rather than silently returning a default) on an unrecognized version', () => {
+    const json = JSON.stringify({ version: 999, profile: { name: 'X', muted: false }, facts: {}, sessions: [] });
+    expect(() => importStateJson(json)).toThrow();
+  });
+
+  it('importStateJson throws on invalid JSON', () => {
+    expect(() => importStateJson('{not valid json')).toThrow();
+  });
+
+  it('importStateJson throws when facts has a fundamentally invalid shape', () => {
+    const json = JSON.stringify({ version: 1, profile: { name: 'X', muted: false }, facts: 'nope', sessions: [] });
+    expect(() => importStateJson(json)).toThrow();
+  });
+
+  it('importStateJson defaults missing/null facts and sessions to empty', () => {
+    const json = JSON.stringify({ version: 1, profile: { name: 'X', muted: false }, facts: null, sessions: null });
+    const imported = importStateJson(json);
+    expect(imported.facts).toEqual({});
+    expect(imported.sessions).toEqual([]);
+  });
 });

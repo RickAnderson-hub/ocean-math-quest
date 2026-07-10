@@ -31,7 +31,14 @@ export function ParentCorner({ onBack }: ParentCornerProps) {
     const file = event.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => importState(String(reader.result));
+    reader.onload = () => {
+      try {
+        importState(String(reader.result));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        window.alert('Could not import progress: ' + message);
+      }
+    };
     reader.readAsText(file);
   }
 
