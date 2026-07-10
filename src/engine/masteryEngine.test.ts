@@ -41,6 +41,23 @@ describe('computeFactMastery', () => {
     ];
     expect(computeFactMastery(attempts)).toBe('known');
   });
+
+  it('counts an answer at exactly the recall threshold (3000ms) as recalled', () => {
+    const attempts = [
+      { date: '2026-07-10', ms: 3000, correct: true },
+      { date: '2026-07-10', ms: 3000, correct: true },
+      { date: '2026-07-11', ms: 3000, correct: true },
+    ];
+    expect(computeFactMastery(attempts)).toBe('mastered');
+  });
+
+  it('does not master on only 2 fast-correct answers across 2 distinct days', () => {
+    const attempts = [
+      { date: '2026-07-10', ms: 1000, correct: true },
+      { date: '2026-07-11', ms: 1000, correct: true },
+    ];
+    expect(computeFactMastery(attempts)).toBe('known');
+  });
 });
 
 describe('recordAttempt', () => {
