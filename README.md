@@ -1,32 +1,41 @@
-# React + TypeScript + Vite
+# Ocean Math Quest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A times-table flashcard game for practicing multiplication (2× through 12×), themed as an ocean dive. Mastery-gated progression, no ads, no accounts — all progress is saved locally in the browser.
 
-Currently, two official plugins are available:
+## Develop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Test
+
+```bash
+npm test
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+Produces a static site in `dist/`.
+
+## Deploy
+
+The build output in `dist/` is a fully static site (relative asset paths, no server needed). Two easy options:
+
+- **Netlify:** drag the `dist/` folder onto https://app.netlify.com/drop
+- **GitHub Pages:** push `dist/` to a `gh-pages` branch, or serve it from the repo's Pages settings pointed at `dist/`
+
+To preview the production build locally first:
+```bash
+npm run build
+npx serve dist
+```
+
+## Progress data
+
+All progress lives in the browser's `localStorage`, scoped to this site's origin. Use the gear icon (Parent Corner) to export or import progress as a JSON file — handy for moving progress to a new device or backing it up before clearing browser data.
