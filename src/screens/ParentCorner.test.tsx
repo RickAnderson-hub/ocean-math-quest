@@ -9,8 +9,8 @@ import { createDefaultState } from '../storage/schema';
 describe('ParentCorner', () => {
   beforeEach(() => {
     localStorage.clear();
-    global.URL.createObjectURL = vi.fn(() => 'blob:mock');
-    global.URL.revokeObjectURL = vi.fn();
+    globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock');
+    globalThis.URL.revokeObjectURL = vi.fn();
   });
 
   it('renders a heatmap cell per fact with its mastery class', () => {
@@ -35,7 +35,7 @@ describe('ParentCorner', () => {
       </AppStateProvider>
     );
     await userEvent.click(screen.getByText('Export progress'));
-    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(globalThis.URL.createObjectURL).toHaveBeenCalled();
   });
 
   it('calls onBack when Back is clicked', async () => {
