@@ -4,6 +4,8 @@ import { ComboMeter } from '../components/ComboMeter';
 import { buildSessionQueue, QueueCard } from '../engine/queueBuilder';
 import { useAppState } from '../store/AppStateContext';
 import { SessionSummary } from '../storage/schema';
+import { recordAttempt } from '../engine/masteryEngine';
+import type { FactState } from '../engine/types';
 
 const RECALL_THRESHOLD_MS = 3000;
 const FEEDBACK_DELAY_MS = 600;
@@ -37,16 +39,26 @@ export function DrillScreen({ table, onComplete }: DrillScreenProps) {
     statsRef.current.total += 1;
     if (correct) statsRef.current.correct += 1;
 
-    const wasAlreadyMastered = state.facts[card.key]?.mastery === 'mastered';
+    const existingFact: FactState = state.facts[card.key] ?? {
+      a: Math.min(card.a, card.b),
+      b: Math.max(card.a, card.b),
+      attempts: [],
+      mastery: 'unseen',
+      lastSeen: null,
+    };
+    const wasAlreadyMastered = existingFact.mastery === 'mastered';
+    const updatedFact = recordAttempt(existingFact, { date: today, ms: elapsedMs, correct });
+
     recordFactAttempt(card.a, card.b, { date: today, ms: elapsedMs, correct });
 
     if (correct && elapsedMs <= RECALL_THRESHOLD_MS) {
       setCombo(c => c + 1);
-      if (!wasAlreadyMastered) {
-        statsRef.current.newlyMastered.add(card.key);
-      }
     } else {
       setCombo(0);
+    }
+
+    if (!wasAlreadyMastered && updatedFact.mastery === 'mastered') {
+      statsRef.current.newlyMastered.add(card.key);
     }
 
     setFeedback(correct ? 'correct' : 'wrong');

@@ -40,5 +40,8 @@ describe('DrillScreen', () => {
     expect(summary.cardsCorrect).toBe(20);
     expect(summary.stars).toBe(3);
     expect(summary.table).toBe(2);
+    // Mastery requires 3 recalled answers spanning 2 distinct calendar days, so
+    // nothing can become newly mastered within a single first session.
+    expect(summary.newlyMastered).toEqual([]);
   });
 });
