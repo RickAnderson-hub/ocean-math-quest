@@ -38,4 +38,4 @@ npx serve dist
 
 ## Progress data
 
-All progress lives in the browser's `localStorage`, scoped to this site's origin. Use the gear icon (Parent Corner) to export or import progress as a JSON file — handy for moving progress to a new device or backing it up before clearing browser data.
+ All progress lives in the browser's `localStorage`, scoped to this site's origin. Use the gear icon (Parent Corner) to export or import progress as a JSON file — handy for moving progress to a new device or backing it up before clearing browser data.
