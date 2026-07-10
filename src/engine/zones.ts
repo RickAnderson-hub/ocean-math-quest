@@ -1,4 +1,4 @@
-import { ZoneDefinition } from './types';
+import { ZoneDefinition, FactState } from './types';
 
 export const ZONES: ZoneDefinition[] = [
   { table: 2, name: 'Sunlit Reef', creature: 'Clownfish' },
@@ -26,4 +26,20 @@ export function factsForZone(table: number): Array<{ a: number; b: number }> {
     facts.push({ a: table, b });
   }
   return facts;
+}
+
+export function isZoneMastered(table: number, facts: Record<string, FactState>): boolean {
+  return factsForZone(table).every(({ a, b }) => {
+    const key = factKeyFor(a, b);
+    return facts[key]?.mastery === 'mastered';
+  });
+}
+
+export function currentUnlockedZone(facts: Record<string, FactState>): number {
+  for (const zone of ZONES) {
+    if (!isZoneMastered(zone.table, facts)) {
+      return zone.table;
+    }
+  }
+  return ZONES[ZONES.length - 1].table;
 }
