@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { factKeyFor, ZONES } from '../engine/zones';
 import { useAppState } from '../store/AppStateContext';
+import './ParentCorner.css';
 
 interface ParentCornerProps {
   onBack: () => void;
@@ -44,41 +45,55 @@ export function ParentCorner({ onBack }: ParentCornerProps) {
 
   return (
     <div className="parent-corner">
-      <button type="button" onClick={onBack}>
-        Back
-      </button>
-      <table data-testid="mastery-heatmap">
-        <thead>
-          <tr>
-            <th />
-            {MULTIPLIERS.map(b => (
-              <th key={b}>{b}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {ZONES.map(zone => (
-            <tr key={zone.table}>
-              <th>{zone.table}</th>
-              {MULTIPLIERS.map(b => {
-                const key = factKeyFor(zone.table, b);
-                const mastery = state.facts[key]?.mastery ?? 'unseen';
-                return (
-                  <td key={b} data-testid={`fact-${zone.table}-${b}`} className={`mastery-${mastery}`}>
-                    {mastery[0].toUpperCase()}
-                  </td>
-                );
-              })}
+      <div className="parent-corner__topbar">
+        <button type="button" className="parent-corner__back" onClick={onBack}>
+          Back
+        </button>
+        <h1 className="parent-corner__title">Parent Corner</h1>
+      </div>
+
+      <p className="parent-corner__hint">
+        Each cell shows how well a fact is known: <strong>U</strong>nseen, <strong>L</strong>earning,{' '}
+        <strong>K</strong>nown, <strong>M</strong>astered.
+      </p>
+
+      <div className="parent-corner__table-wrap">
+        <table className="parent-corner__table" data-testid="mastery-heatmap">
+          <thead>
+            <tr>
+              <th />
+              {MULTIPLIERS.map(b => (
+                <th key={b}>{b}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <button type="button" onClick={handleExport}>
-        Export progress
-      </button>
-      <button type="button" onClick={handleImportClick}>
-        Import progress
-      </button>
+          </thead>
+          <tbody>
+            {ZONES.map(zone => (
+              <tr key={zone.table}>
+                <th>{zone.table}</th>
+                {MULTIPLIERS.map(b => {
+                  const key = factKeyFor(zone.table, b);
+                  const mastery = state.facts[key]?.mastery ?? 'unseen';
+                  return (
+                    <td key={b} data-testid={`fact-${zone.table}-${b}`} className={`mastery-${mastery}`}>
+                      {mastery[0].toUpperCase()}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="parent-corner__actions">
+        <button type="button" className="parent-corner__action" onClick={handleExport}>
+          Export progress
+        </button>
+        <button type="button" className="parent-corner__action" onClick={handleImportClick}>
+          Import progress
+        </button>
+      </div>
       <input
         ref={fileInputRef}
         type="file"

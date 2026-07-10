@@ -1,3 +1,5 @@
+import './ComboMeter.css';
+
 interface ComboMeterProps {
   combo: number;
 }

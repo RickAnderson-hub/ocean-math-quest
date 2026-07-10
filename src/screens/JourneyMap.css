@@ -1,0 +1,210 @@
+.journey-map {
+  flex: 1;
+  padding: 20px 16px 64px;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.journey-map__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.journey-map__title {
+  font-size: clamp(22px, 5vw, 30px);
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, var(--foam), var(--reef));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.parent-corner-gear {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 246, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foam-dim);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.parent-corner-gear:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--foam);
+  transform: rotate(35deg);
+}
+
+/* The dive path: a single continuous line of descent, connecting every zone. */
+.dive-path {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0 0 0 0;
+  position: relative;
+}
+
+.dive-path::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(234, 246, 255, 0.55) 0 6px,
+    transparent 6px 14px
+  );
+  border-radius: 2px;
+}
+
+.dive-node {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 34px;
+}
+
+.dive-node__depth {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--abyss);
+  background: color-mix(in srgb, var(--reef) calc((13 - var(--depth, 2)) * 8%), var(--foam-dim) 0%);
+  background-color: var(--reef);
+  z-index: 2;
+  box-shadow: 0 0 0 4px var(--abyss);
+}
+
+.dive-node--current .dive-node__depth {
+  background-color: var(--sunbeam);
+  animation: pulse-ring 1.8s ease-in-out infinite;
+}
+
+.dive-node--locked .dive-node__depth {
+  background-color: rgba(234, 246, 255, 0.18);
+  color: var(--foam-dim);
+}
+
+.dive-node__card {
+  width: calc(50% - 34px);
+  margin-top: 34px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--deep-light) calc(100% - (var(--depth, 2) * 4%)), var(--abyss));
+  border: 1px solid rgba(234, 246, 255, 0.12);
+  box-shadow: var(--shadow-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dive-node--left .dive-node__card {
+  margin-right: auto;
+  align-items: flex-start;
+}
+
+.dive-node--right .dive-node__card {
+  margin-left: auto;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.dive-node--current .dive-node__card {
+  border-color: var(--sunbeam);
+  box-shadow: 0 0 0 1px var(--sunbeam), 0 0 24px rgba(255, 209, 102, 0.35), var(--shadow-deep);
+}
+
+.dive-node--locked .dive-node__card {
+  opacity: 0.5;
+  filter: saturate(0.5);
+}
+
+.dive-node__label {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--foam);
+}
+
+.dive-node__creature {
+  font-size: 13px;
+  color: var(--foam-dim);
+}
+
+.dive-node__creature::before {
+  content: '✓ ';
+  color: var(--reef);
+  font-weight: 700;
+}
+
+.dive-node__action {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--abyss);
+  background: var(--reef);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.dive-node--current .dive-node__action {
+  background: var(--sunbeam);
+}
+
+.dive-node__action:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: var(--reef-dark);
+}
+
+.dive-node--current .dive-node__action:hover {
+  background: #ffc233;
+}
+
+.dive-node__lock {
+  font-size: 13px;
+  color: var(--foam-dim);
+}
+
+.dive-node__lock::before {
+  content: '🔒 ';
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px var(--abyss), 0 0 0 4px var(--abyss);
+  }
+  50% {
+    box-shadow: 0 0 0 4px var(--abyss), 0 0 0 10px rgba(255, 209, 102, 0.35);
+  }
+}
+
+@media (max-width: 420px) {
+  .dive-node__card {
+    width: calc(50% - 20px);
+    padding: 12px;
+  }
+}

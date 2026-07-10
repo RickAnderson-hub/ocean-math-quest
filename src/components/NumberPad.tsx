@@ -1,3 +1,5 @@
+import './NumberPad.css';
+
 interface NumberPadProps {
   value: string;
   onDigit: (digit: string) => void;
@@ -16,14 +18,32 @@ export function NumberPad({ value, onDigit, onBackspace, onSubmit, disabled = fa
       </div>
       <div className="number-pad-grid">
         {DIGITS.map(digit => (
-          <button key={digit} type="button" disabled={disabled} onClick={() => onDigit(digit)}>
+          <button
+            key={digit}
+            type="button"
+            className="number-pad-key"
+            disabled={disabled}
+            onClick={() => onDigit(digit)}
+          >
             {digit}
           </button>
         ))}
-        <button type="button" disabled={disabled} onClick={onBackspace} aria-label="backspace">
+        <button
+          type="button"
+          className="number-pad-key number-pad-key--backspace"
+          disabled={disabled}
+          onClick={onBackspace}
+          aria-label="backspace"
+        >
           ⌫
         </button>
-        <button type="button" disabled={disabled} onClick={onSubmit} aria-label="submit">
+        <button
+          type="button"
+          className="number-pad-key number-pad-key--submit"
+          disabled={disabled}
+          onClick={onSubmit}
+          aria-label="submit"
+        >
           ✓
         </button>
       </div>

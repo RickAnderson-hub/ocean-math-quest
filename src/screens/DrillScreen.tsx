@@ -6,6 +6,8 @@ import { useAppState } from '../store/AppStateContext';
 import { SessionSummary } from '../storage/schema';
 import { recordAttempt } from '../engine/masteryEngine';
 import type { FactState } from '../engine/types';
+import { ZONES } from '../engine/zones';
+import './DrillScreen.css';
 
 const RECALL_THRESHOLD_MS = 3000;
 const FEEDBACK_DELAY_MS = 600;
@@ -29,6 +31,8 @@ export function DrillScreen({ table, onComplete }: DrillScreenProps) {
   if (!card) {
     return null;
   }
+
+  const zone = ZONES.find(z => z.table === table);
 
   function submit() {
     if (value === '') return;
@@ -99,20 +103,25 @@ export function DrillScreen({ table, onComplete }: DrillScreenProps) {
 
   return (
     <div className="drill-screen">
+      <div className="drill-screen__header">
+        <span className="drill-screen__zone">{zone?.name ?? `Table ${table}`}</span>
+        <div className="progress-dots" data-testid="progress">
+          {index + 1} / {queue.length}
+        </div>
+      </div>
       <ComboMeter combo={combo} />
-      <div className="progress-dots" data-testid="progress">
-        {index + 1} / {queue.length}
+      <div className="dive-site">
+        <div className={`card ${feedback ?? ''}`} data-testid="card">
+          {card.a} &times; {card.b} = ?
+        </div>
+        <NumberPad
+          value={value}
+          onDigit={digit => setValue(v => v + digit)}
+          onBackspace={() => setValue(v => v.slice(0, -1))}
+          onSubmit={submit}
+          disabled={feedback !== null}
+        />
       </div>
-      <div className={`card ${feedback ?? ''}`} data-testid="card">
-        {card.a} &times; {card.b} = ?
-      </div>
-      <NumberPad
-        value={value}
-        onDigit={digit => setValue(v => v + digit)}
-        onBackspace={() => setValue(v => v.slice(0, -1))}
-        onSubmit={submit}
-        disabled={feedback !== null}
-      />
     </div>
   );
 }

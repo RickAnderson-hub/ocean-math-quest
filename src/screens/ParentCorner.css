@@ -1,0 +1,129 @@
+/* Deliberately breaks from the kid-facing ocean theme: a calmer,
+   data-forward "settings panel" register for the adult in the room. */
+.parent-corner {
+  padding: 20px 16px 32px;
+  max-width: 640px;
+  margin: 16px auto;
+  width: calc(100% - 32px);
+  color: #1f2733;
+  background: #f4f7f9;
+  border-radius: 20px;
+  box-shadow: var(--shadow-deep);
+}
+
+.parent-corner__topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.parent-corner__back {
+  border: 1px solid #d3dbe0;
+  background: #fff;
+  color: #40505c;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.parent-corner__back::before {
+  content: '← ';
+}
+
+.parent-corner__back:hover {
+  background: #eef2f4;
+}
+
+.parent-corner__title {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 18px;
+  color: #1f2733;
+}
+
+.parent-corner__hint {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: #5b6b76;
+  margin: 12px 0 16px;
+  line-height: 1.5;
+}
+
+.parent-corner__table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #dde4e8;
+}
+
+.parent-corner__table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.parent-corner__table th,
+.parent-corner__table td {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border: 1px solid #e6ebee;
+}
+
+.parent-corner__table thead th {
+  background: #eef2f4;
+  color: #5b6b76;
+  font-weight: 600;
+}
+
+.parent-corner__table tbody th {
+  background: #eef2f4;
+  color: #5b6b76;
+  font-weight: 600;
+}
+
+.parent-corner__table td {
+  font-weight: 700;
+  color: #98a5ad;
+  background: #fff;
+}
+
+.parent-corner__table td.mastery-learning {
+  background: #ffe3d9;
+  color: #c4502f;
+}
+
+.parent-corner__table td.mastery-known {
+  background: #fff3c4;
+  color: #96790c;
+}
+
+.parent-corner__table td.mastery-mastered {
+  background: #d3f5ee;
+  color: #0e7d6f;
+}
+
+.parent-corner__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.parent-corner__action {
+  flex: 1;
+  border: 1px solid #d3dbe0;
+  background: #fff;
+  color: #1f2733;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.parent-corner__action:hover {
+  background: #eef2f4;
+}

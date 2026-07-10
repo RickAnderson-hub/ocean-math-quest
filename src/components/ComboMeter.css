@@ -1,0 +1,47 @@
+.combo-meter {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  border-radius: 999px;
+  padding: 0 18px;
+  transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.combo-meter--none {
+  background: transparent;
+}
+
+.combo-meter--bubbles {
+  color: var(--reef);
+  background: rgba(34, 211, 197, 0.16);
+  box-shadow: 0 0 0 1px rgba(34, 211, 197, 0.35);
+}
+
+.combo-meter--glow {
+  color: var(--sunbeam);
+  background: rgba(255, 209, 102, 0.18);
+  box-shadow: 0 0 18px rgba(255, 209, 102, 0.45), 0 0 0 1px rgba(255, 209, 102, 0.5);
+  transform: scale(1.03);
+}
+
+.combo-meter--burst {
+  color: var(--abyss);
+  background: linear-gradient(90deg, var(--sunbeam), var(--coral));
+  box-shadow: 0 0 24px rgba(255, 122, 89, 0.6);
+  transform: scale(1.08);
+  animation: combo-burst 0.6s ease infinite alternate;
+}
+
+@keyframes combo-burst {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
