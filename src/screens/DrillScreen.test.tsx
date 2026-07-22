@@ -44,4 +44,43 @@ describe('DrillScreen', () => {
     // nothing can become newly mastered within a single first session.
     expect(summary.newlyMastered).toEqual([]);
   });
+
+  it('holds the combo (does not reset) on a correct-but-slow answer', () => {
+    render(
+      <AppStateProvider>
+        <DrillScreen table={2} onComplete={vi.fn()} />
+      </AppStateProvider>
+    );
+
+    function answerCurrentCard(delayMs: number) {
+      const cardText = screen.getByTestId('card').textContent ?? '';
+      const match = cardText.match(/(\d+)\s*×\s*(\d+)/);
+      if (!match) throw new Error(`could not parse card text: ${cardText}`);
+      const [, aStr, bStr] = match;
+      const answer = String(Number(aStr) * Number(bStr));
+
+      act(() => {
+        vi.advanceTimersByTime(delayMs);
+      });
+      for (const digit of answer) {
+        fireEvent.click(screen.getByRole('button', { name: digit }));
+      }
+      fireEvent.click(screen.getByRole('button', { name: 'submit' }));
+      act(() => {
+        vi.advanceTimersByTime(600);
+      });
+    }
+
+    answerCurrentCard(100);
+    answerCurrentCard(100);
+    answerCurrentCard(100);
+    expect(screen.getByTestId('combo-meter').textContent).toBe('Combo: 3');
+
+    // Correct, but too slow to count as "recalled" — combo should hold, not reset.
+    answerCurrentCard(3500);
+    expect(screen.getByTestId('combo-meter').textContent).toBe('Combo: 3');
+
+    answerCurrentCard(100);
+    expect(screen.getByTestId('combo-meter').textContent).toBe('Combo: 4');
+  });
 });

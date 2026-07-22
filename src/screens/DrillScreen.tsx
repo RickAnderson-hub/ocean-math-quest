@@ -57,7 +57,7 @@ export function DrillScreen({ table, onComplete }: DrillScreenProps) {
 
     if (correct && elapsedMs <= RECALL_THRESHOLD_MS) {
       setCombo(c => c + 1);
-    } else {
+    } else if (!correct) {
       setCombo(0);
     }
 
