@@ -1,0 +1,37 @@
+.cove-game {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cove-game__prompt {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--foam-dim);
+  text-align: center;
+  max-width: 26rem;
+}
+
+.cove-game__check {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--abyss);
+  background: var(--reef);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.cove-game__check:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.03);
+  background: var(--reef-dark);
+}
+
+.cove-game__check:disabled {
+  opacity: 0.45;
+}

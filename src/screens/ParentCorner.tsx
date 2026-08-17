@@ -79,7 +79,8 @@ export function ParentCorner({ onBack }: ParentCornerProps) {
               data-testid={`cove-skill-${id}`}
               className={state.coveSkills[id].mastered ? 'cove-skill--mastered' : 'cove-skill--in-progress'}
             >
-              {SKILL_LABELS[id]}: {state.coveSkills[id].mastered ? 'Mastered' : 'In progress'}
+              <span className="cove-skill__label">{SKILL_LABELS[id]}</span>
+              <span className="cove-skill__status">{state.coveSkills[id].mastered ? 'Mastered' : 'In progress'}</span>
             </li>
           ))}
         </ul>

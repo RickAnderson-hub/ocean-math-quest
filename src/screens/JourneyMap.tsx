@@ -33,7 +33,11 @@ export function JourneyMap({ onPlay, onPlayCove, onOpenParentCorner }: JourneyMa
           key="arrays-cove"
           data-testid="zone-arrays-cove"
           className={`dive-node dive-node--left dive-node--${coveMastered ? 'mastered' : 'current'}`}
+          style={{ '--depth': 0 } as React.CSSProperties}
         >
+          <span className="dive-node__depth" aria-hidden="true">
+            ⚓
+          </span>
           <div className="dive-node__card">
             <span className="dive-node__label">Arrays Cove</span>
             {coveMastered && (

@@ -21,6 +21,7 @@ import {
   checkTrueFalse,
   checkWhenToMultiply,
 } from '../engine/coveContent';
+import './CoveGames.css';
 
 interface GameProps<T> {
   round: T;
@@ -50,7 +51,12 @@ export function BuildArrayGame({ round, onSubmit, disabled }: GameProps<BuildArr
     <div className="cove-game">
       <p className="cove-game__prompt">Build an array with {round.targetProduct} dots.</p>
       <ArrayGrid rows={rows} cols={cols} editable onRowsChange={setRows} onColsChange={setCols} />
-      <button type="button" disabled={disabled} onClick={() => onSubmit(checkBuildArray(round, rows, cols))}>
+      <button
+        type="button"
+        className="cove-game__check"
+        disabled={disabled}
+        onClick={() => onSubmit(checkBuildArray(round, rows, cols))}
+      >
         Check
       </button>
     </div>
@@ -100,7 +106,12 @@ export function EquivalentFactsGame({ round, onSubmit, disabled }: GameProps<Equ
       </p>
       <ArrayGrid rows={round.a} cols={round.b} />
       <ArrayGrid rows={rows} cols={cols} editable onRowsChange={setRows} onColsChange={setCols} />
-      <button type="button" disabled={disabled} onClick={() => onSubmit(checkEquivalentFacts(round, rows, cols))}>
+      <button
+        type="button"
+        className="cove-game__check"
+        disabled={disabled}
+        onClick={() => onSubmit(checkEquivalentFacts(round, rows, cols))}
+      >
         Check
       </button>
     </div>

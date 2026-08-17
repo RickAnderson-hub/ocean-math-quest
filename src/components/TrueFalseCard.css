@@ -2,21 +2,52 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 20px;
 }
 
 .true-false-card__statement {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(26px, 6vw, 34px);
+  color: var(--foam);
 }
 
 .true-false-card__actions {
   display: flex;
-  gap: 1rem;
+  gap: 14px;
 }
 
-.true-false-card__actions button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
+.true-false-card__button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--abyss);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.true-false-card__button--true {
+  background: var(--reef);
+}
+
+.true-false-card__button--true:hover:not(:disabled) {
+  background: var(--reef-dark);
+}
+
+.true-false-card__button--false {
+  background: var(--coral);
+}
+
+.true-false-card__button--false:hover:not(:disabled) {
+  background: #e56646;
+}
+
+.true-false-card__button:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.true-false-card__button:disabled {
+  opacity: 0.45;
 }

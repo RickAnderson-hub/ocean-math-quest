@@ -2,28 +2,53 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .word-problem-picker__prompt {
-  font-size: 1.1rem;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--foam-dim);
   text-align: center;
-  max-width: 28rem;
+  max-width: 26rem;
 }
 
 .word-problem-picker__options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 10px;
   justify-content: center;
 }
 
 .word-problem-picker__option {
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.75rem;
-  font-size: 1.05rem;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--foam);
+  background: var(--deep-light);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.1s ease;
+}
+
+.word-problem-picker__option:hover:not(:disabled) {
+  background: var(--reef-dark);
+}
+
+.word-problem-picker__option:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.word-problem-picker__option:disabled {
+  opacity: 0.45;
 }
 
 .word-problem-picker__option--selected {
-  outline: 3px solid #1f7a99;
+  background: var(--reef);
+  color: var(--abyss);
+  box-shadow: 0 0 0 3px rgba(34, 211, 197, 0.4), 0 3px 0 rgba(0, 0, 0, 0.3);
 }

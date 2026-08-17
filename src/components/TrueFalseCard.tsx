@@ -13,10 +13,22 @@ export function TrueFalseCard({ statement, onAnswer, disabled = false }: TrueFal
         {statement}
       </p>
       <div className="true-false-card__actions">
-        <button type="button" disabled={disabled} onClick={() => onAnswer(true)} data-testid="true-false-true">
+        <button
+          type="button"
+          className="true-false-card__button true-false-card__button--true"
+          disabled={disabled}
+          onClick={() => onAnswer(true)}
+          data-testid="true-false-true"
+        >
           True
         </button>
-        <button type="button" disabled={disabled} onClick={() => onAnswer(false)} data-testid="true-false-false">
+        <button
+          type="button"
+          className="true-false-card__button true-false-card__button--false"
+          disabled={disabled}
+          onClick={() => onAnswer(false)}
+          data-testid="true-false-false"
+        >
           False
         </button>
       </div>
