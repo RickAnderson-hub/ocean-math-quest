@@ -1,0 +1,16 @@
+.grouping-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grouping-board__expression {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.grouping-board__equals {
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
