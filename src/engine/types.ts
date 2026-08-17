@@ -19,3 +19,18 @@ export interface ZoneDefinition {
   name: string;
   creature: string;
 }
+
+export type ConceptSkillId =
+  | 'when-to-multiply'
+  | 'build-array'
+  | 'commute-spin'
+  | 'commute-solve'
+  | 'equivalent-facts'
+  | 'true-false'
+  | 'associative'
+  | 'factor-pairs';
+
+export interface ConceptSkillState {
+  recentCorrect: boolean[];
+  mastered: boolean;
+}
