@@ -5,7 +5,7 @@ import { AppStateProvider, useAppState } from './AppStateContext';
 import { loadState } from '../storage/persistence';
 
 function TestConsumer() {
-  const { state, recordFactAttempt, addSession } = useAppState();
+  const { state, recordFactAttempt, addSession, recordCoveSkillAttempt } = useAppState();
   return (
     <div>
       <span data-testid="mastery">{state.facts['3-4']?.mastery ?? 'unseen'}</span>
@@ -22,6 +22,11 @@ function TestConsumer() {
         addSession
       </button>
       <span data-testid="sessionCount">{state.sessions.length}</span>
+      <button onClick={() => recordCoveSkillAttempt('when-to-multiply', true)}>
+        recordCoveSkill
+      </button>
+      <span data-testid="coveSkillRecentCorrectLength">{state.coveSkills['when-to-multiply'].recentCorrect.length}</span>
+      <span data-testid="buildArrayRecentCorrectLength">{state.coveSkills['build-array'].recentCorrect.length}</span>
     </div>
   );
 }
@@ -60,5 +65,16 @@ describe('AppStateContext', () => {
     await userEvent.click(screen.getByText('addSession'));
     expect(screen.getByTestId('sessionCount')).toHaveTextContent('1');
     expect(loadState().sessions).toHaveLength(1);
+  });
+
+  it('recordCoveSkillAttempt updates the named skill and leaves others untouched', async () => {
+    render(
+      <AppStateProvider>
+        <TestConsumer />
+      </AppStateProvider>
+    );
+    await userEvent.click(screen.getByText('recordCoveSkill'));
+    expect(screen.getByTestId('coveSkillRecentCorrectLength')).toHaveTextContent('1');
+    expect(screen.getByTestId('buildArrayRecentCorrectLength')).toHaveTextContent('0');
   });
 });

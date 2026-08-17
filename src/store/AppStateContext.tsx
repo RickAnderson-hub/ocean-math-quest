@@ -2,12 +2,14 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { AppState, SessionSummary } from '../storage/schema';
 import { exportStateJson, importStateJson, loadState, saveState } from '../storage/persistence';
 import { recordAttempt } from '../engine/masteryEngine';
+import { recordSkillAttempt } from '../engine/coveEngine';
 import { factKeyFor } from '../engine/zones';
-import { Attempt, FactState } from '../engine/types';
+import { Attempt, ConceptSkillId, FactState } from '../engine/types';
 
 interface AppStateContextValue {
   state: AppState;
   recordFactAttempt: (a: number, b: number, attempt: Attempt) => void;
+  recordCoveSkillAttempt: (skillId: ConceptSkillId, correct: boolean) => void;
   addSession: (summary: SessionSummary) => void;
   exportState: () => string;
   importState: (json: string) => void;
@@ -37,6 +39,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function recordCoveSkillAttempt(skillId: ConceptSkillId, correct: boolean) {
+    setState(prev => {
+      const updated = recordSkillAttempt(prev.coveSkills[skillId], correct);
+      return { ...prev, coveSkills: { ...prev.coveSkills, [skillId]: updated } };
+    });
+  }
+
   function addSession(summary: SessionSummary) {
     setState(prev => ({ ...prev, sessions: [...prev.sessions, summary].slice(-50) }));
   }
@@ -50,7 +59,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppStateContext.Provider value={{ state, recordFactAttempt, addSession, exportState, importState }}>
+    <AppStateContext.Provider value={{ state, recordFactAttempt, recordCoveSkillAttempt, addSession, exportState, importState }}>
       {children}
     </AppStateContext.Provider>
   );
