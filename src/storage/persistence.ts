@@ -1,4 +1,25 @@
 import { AppState, createDefaultState, SCHEMA_VERSION, STORAGE_KEY } from './schema';
+import { createDefaultCoveSkills } from '../engine/coveEngine';
+
+interface V1AppState {
+  version: 1;
+  profile: { name: string; muted: boolean };
+  facts?: AppState['facts'] | null;
+  sessions?: AppState['sessions'] | null;
+}
+
+function migrateV1ToV2(v1: V1AppState): AppState {
+  const facts = v1.facts ?? {};
+  const hasExistingProgress = Object.keys(facts).length > 0;
+  return {
+    version: 2,
+    profile: v1.profile,
+    facts,
+    coveSkills: createDefaultCoveSkills(),
+    coveGateExempt: hasExistingProgress,
+    sessions: v1.sessions ?? [],
+  };
+}
 
 /**
  * Validates that a candidate object has a plausible AppState shape,
@@ -14,10 +35,16 @@ function validateShape(candidate: AppState): AppState {
   if (sessions !== undefined && sessions !== null && !Array.isArray(sessions)) {
     throw new Error('Cannot import: "sessions" has an invalid shape');
   }
+  const coveSkills = (candidate as { coveSkills?: unknown }).coveSkills;
+  if (coveSkills !== undefined && coveSkills !== null && (typeof coveSkills !== 'object' || Array.isArray(coveSkills))) {
+    throw new Error('Cannot import: "coveSkills" has an invalid shape');
+  }
   return {
     ...candidate,
     facts: (facts as AppState['facts']) ?? {},
     sessions: (sessions as AppState['sessions']) ?? [],
+    coveSkills: (coveSkills as AppState['coveSkills']) ?? createDefaultCoveSkills(),
+    coveGateExempt: typeof candidate.coveGateExempt === 'boolean' ? candidate.coveGateExempt : false,
   };
 }
 
@@ -34,11 +61,13 @@ export function migrateState(parsed: unknown): AppState {
   ) {
     return createDefaultState();
   }
-  const candidate = parsed as AppState;
-  if (candidate.version === SCHEMA_VERSION) {
-    return validateShape(candidate);
+  let candidate = parsed as V1AppState | AppState;
+  if (candidate.version === 1) {
+    candidate = migrateV1ToV2(candidate as V1AppState);
   }
-  // Future schema migrations, chained by version number, go here.
+  if (candidate.version === SCHEMA_VERSION) {
+    return validateShape(candidate as AppState);
+  }
   return createDefaultState();
 }
 
@@ -58,10 +87,14 @@ export function migrateStateStrict(parsed: unknown): AppState {
   if (typeof version !== 'number') {
     throw new Error('Cannot import: missing or invalid version field');
   }
-  if (version !== SCHEMA_VERSION) {
+  if (version !== 1 && version !== SCHEMA_VERSION) {
     throw new Error(`Cannot import: unrecognized data version (${version})`);
   }
-  return validateShape(parsed as AppState);
+  let candidate = parsed as V1AppState | AppState;
+  if (version === 1) {
+    candidate = migrateV1ToV2(candidate as V1AppState);
+  }
+  return validateShape(candidate as AppState);
 }
 
 export function loadState(): AppState {
