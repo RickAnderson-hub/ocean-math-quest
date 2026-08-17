@@ -48,4 +48,25 @@ describe('ParentCorner', () => {
     await userEvent.click(screen.getByText('Back'));
     expect(onBack).toHaveBeenCalledTimes(1);
   });
+
+  it('shows a progress row for every cove skill', () => {
+    render(
+      <AppStateProvider>
+        <ParentCorner onBack={vi.fn()} />
+      </AppStateProvider>
+    );
+    expect(screen.getByTestId('cove-skill-when-to-multiply')).toHaveTextContent('In progress');
+  });
+
+  it('shows Mastered once a skill reaches the mastery streak', () => {
+    const state = createDefaultState();
+    state.coveSkills['when-to-multiply'] = { recentCorrect: [true, true, true, true, true], mastered: true };
+    saveState(state);
+    render(
+      <AppStateProvider>
+        <ParentCorner onBack={vi.fn()} />
+      </AppStateProvider>
+    );
+    expect(screen.getByTestId('cove-skill-when-to-multiply')).toHaveTextContent('Mastered');
+  });
 });

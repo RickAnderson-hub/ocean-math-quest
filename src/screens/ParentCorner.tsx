@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { factKeyFor, ZONES } from '../engine/zones';
 import { useAppState } from '../store/AppStateContext';
+import { CONCEPT_SKILL_IDS } from '../engine/coveEngine';
+import { ConceptSkillId } from '../engine/types';
 import './ParentCorner.css';
 
 interface ParentCornerProps {
@@ -8,6 +10,17 @@ interface ParentCornerProps {
 }
 
 const MULTIPLIERS = Array.from({ length: 11 }, (_, i) => i + 2);
+
+const SKILL_LABELS: Record<ConceptSkillId, string> = {
+  'when-to-multiply': 'When to Multiply',
+  'build-array': 'Build an Array',
+  'commute-spin': 'Spin to Commute',
+  'commute-solve': 'Commute & Solve',
+  'equivalent-facts': 'Equivalent Facts',
+  'true-false': 'True or False',
+  associative: 'Regroup the Crates',
+  'factor-pairs': 'How Many Wheels?',
+};
 
 export function ParentCorner({ onBack }: ParentCornerProps) {
   const { state, exportState, importState } = useAppState();
@@ -56,6 +69,21 @@ export function ParentCorner({ onBack }: ParentCornerProps) {
         Each cell shows how well a fact is known: <strong>U</strong>nseen, <strong>L</strong>earning,{' '}
         <strong>K</strong>nown, <strong>M</strong>astered.
       </p>
+
+      <div className="parent-corner__cove-progress" data-testid="cove-progress-panel">
+        <h2 className="parent-corner__subheading">Arrays Cove</h2>
+        <ul className="parent-corner__cove-skill-list">
+          {CONCEPT_SKILL_IDS.map(id => (
+            <li
+              key={id}
+              data-testid={`cove-skill-${id}`}
+              className={state.coveSkills[id].mastered ? 'cove-skill--mastered' : 'cove-skill--in-progress'}
+            >
+              {SKILL_LABELS[id]}: {state.coveSkills[id].mastered ? 'Mastered' : 'In progress'}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="parent-corner__table-wrap">
         <table className="parent-corner__table" data-testid="mastery-heatmap">
