@@ -43,10 +43,10 @@ interface ConceptSkillState {
 - The **Cove is mastered** when all 8 skills are mastered → celebration → Sunlit Reef unlocks.
 - Session/round selection within the Cove prioritizes unmastered skills, round-robin style, so no single mini-game type dominates a sitting.
 
-`AppState` gains a `coveSkills: Record<ConceptSkillId, ConceptSkillState>` field; `version` bumps and the existing migration step handles two cases:
+`AppState` gains a `coveSkills: Record<ConceptSkillId, ConceptSkillState>` field and a `coveGateExempt: boolean` field; `version` bumps and the existing migration step handles two cases:
 
-- **Fresh save** (no existing progress): all 8 `coveSkills` start unmastered; the Cove is the first, unlocked zone.
-- **Pre-existing save** (already has `facts` progress from before the Cove existed): migration marks all 8 `coveSkills` as mastered by default, so a player who's already past Sunlit Reef isn't retroactively locked out of a zone that didn't exist when they started.
+- **Fresh save** (no existing progress): all 8 `coveSkills` start unmastered, `coveGateExempt: false`. The Cove is the first, unlocked stop and genuinely gates Sunlit Reef, same as every other zone gates the next.
+- **Pre-existing save** (already has `facts` progress from before the Cove existed — this is Rick's son's actual save): `coveSkills` start unmastered too, but `coveGateExempt: true`. This decouples two separate questions the original wording of this spec conflated: *is the Cove mastered* (no — he hasn't done these mini-games yet) vs. *should table-zone drilling stay unlocked* (yes — don't interrupt progress he's already mid-way through). The zone-unlock check becomes `isCoveMastered(coveSkills) || coveGateExempt`, so an existing player sees the Cove appear as a new, playable, unmastered first stop while Sunlit Reef (and beyond) stays exactly as unlocked as it already was. `coveGateExempt` is permanent once set — it is not cleared by later Cove mastery, since its only job is "don't gate a player who started before the gate existed."
 
 `zones.ts` gets:
 ```ts
