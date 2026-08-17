@@ -17,6 +17,7 @@ export interface CommuteSpinRound {
   skillId: 'commute-spin';
   a: number;
   b: number;
+  rotatedFirst: boolean;
 }
 
 export interface CommuteSolveRound {
@@ -105,7 +106,18 @@ function generateCommuteSpin(rng: () => number): CommuteSpinRound {
   if (b === a) {
     b = a === 10 ? a - 1 : a + 1;
   }
-  return { skillId: 'commute-spin', a, b };
+  const rotatedFirst = rng() < 0.5;
+  return { skillId: 'commute-spin', a, b, rotatedFirst };
+}
+
+/** Fisher-Yates shuffle driven by the injected rng, for deterministic-but-varied option ordering. */
+function shuffle3<T>(items: [T, T, T], rng: () => number): [T, T, T] {
+  const arr: T[] = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr as [T, T, T];
 }
 
 function generateCommuteSolve(rng: () => number): CommuteSolveRound {
@@ -116,13 +128,24 @@ function generateCommuteSolve(rng: () => number): CommuteSolveRound {
   if (wrongProduct === correctProduct) wrongProduct += 1;
   const noun = pick(NOUNS, rng);
   const prompt = `${a} rows of ${noun}, ${b} in each row. How many ${noun} in all?`;
+  // Shuffle which slot (A/B/C) holds the distractor so its screen position
+  // is not fixed round-to-round — otherwise a child can master this gate by
+  // always tapping the same slot.
+  const [content0, content1, content2] = shuffle3(
+    [
+      { label: `${a} × ${b} = ${correctProduct}`, product: correctProduct },
+      { label: `${b} × ${a} = ${correctProduct}`, product: correctProduct },
+      { label: `${a} × ${b} = ${wrongProduct}`, product: wrongProduct },
+    ],
+    rng
+  );
   return {
     skillId: 'commute-solve',
     prompt,
     correctProduct,
-    optionA: { id: 'a', label: `${a} × ${b} = ${correctProduct}`, product: correctProduct },
-    optionB: { id: 'b', label: `${b} × ${a} = ${correctProduct}`, product: correctProduct },
-    optionC: { id: 'c', label: `${a} × ${b} = ${wrongProduct}`, product: wrongProduct },
+    optionA: { id: 'a', ...content0 },
+    optionB: { id: 'b', ...content1 },
+    optionC: { id: 'c', ...content2 },
   };
 }
 

@@ -43,7 +43,7 @@ function validateShape(candidate: AppState): AppState {
     ...candidate,
     facts: (facts as AppState['facts']) ?? {},
     sessions: (sessions as AppState['sessions']) ?? [],
-    coveSkills: (coveSkills as AppState['coveSkills']) ?? createDefaultCoveSkills(),
+    coveSkills: { ...createDefaultCoveSkills(), ...((coveSkills as AppState['coveSkills']) ?? {}) },
     coveGateExempt: typeof candidate.coveGateExempt === 'boolean' ? candidate.coveGateExempt : false,
   };
 }

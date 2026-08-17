@@ -5,10 +5,19 @@ import { JourneyMap } from './JourneyMap';
 import { AppStateProvider } from '../store/AppStateContext';
 import { saveState } from '../storage/persistence';
 import { createDefaultState } from '../storage/schema';
+import { CONCEPT_SKILL_IDS } from '../engine/coveEngine';
 
 function seedGateExemptSave() {
   const state = createDefaultState();
   state.coveGateExempt = true;
+  saveState(state);
+}
+
+function seedFullyMasteredCoveSave() {
+  const state = createDefaultState();
+  for (const id of CONCEPT_SKILL_IDS) {
+    state.coveSkills[id] = { recentCorrect: [true, true, true, true, true], mastered: true };
+  }
   saveState(state);
 }
 
@@ -80,5 +89,17 @@ describe('JourneyMap', () => {
       </AppStateProvider>
     );
     expect(screen.getByTestId('zone-2')).not.toHaveClass('dive-node--locked');
+  });
+
+  it('unlocks table zones once every cove skill is actually mastered', () => {
+    seedFullyMasteredCoveSave();
+    render(
+      <AppStateProvider>
+        <JourneyMap onPlay={vi.fn()} onPlayCove={vi.fn()} onOpenParentCorner={vi.fn()} />
+      </AppStateProvider>
+    );
+    expect(screen.getByTestId('zone-2')).not.toHaveClass('dive-node--locked');
+    expect(within(screen.getByTestId('zone-arrays-cove')).getByText('Replay')).toBeInTheDocument();
+    expect(within(screen.getByTestId('zone-arrays-cove')).getByTestId('cove-badge')).toBeInTheDocument();
   });
 });

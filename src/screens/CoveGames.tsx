@@ -58,10 +58,9 @@ export function BuildArrayGame({ round, onSubmit, disabled }: GameProps<BuildArr
 }
 
 export function CommuteSpinGame({ round, onSubmit, disabled }: GameProps<CommuteSpinRound>) {
-  const options = [
-    { id: 'rotated', label: `${round.b} rows × ${round.a} columns` },
-    { id: 'unrotated', label: `${round.a} rows × ${round.b} columns` },
-  ];
+  const rotatedOption = { id: 'rotated', label: `${round.b} rows × ${round.a} columns` };
+  const unrotatedOption = { id: 'unrotated', label: `${round.a} rows × ${round.b} columns` };
+  const options = round.rotatedFirst ? [rotatedOption, unrotatedOption] : [unrotatedOption, rotatedOption];
   return (
     <div className="cove-game">
       <ArrayGrid rows={round.a} cols={round.b} />

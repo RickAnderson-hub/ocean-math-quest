@@ -43,10 +43,25 @@ describe('BuildArrayGame', () => {
 describe('CommuteSpinGame', () => {
   it('submits correct=true for the rotated-dimensions option', async () => {
     const onSubmit = vi.fn();
-    const round = { skillId: 'commute-spin' as const, a: 3, b: 5 };
+    const round = { skillId: 'commute-spin' as const, a: 3, b: 5, rotatedFirst: false };
     render(<CommuteSpinGame round={round} onSubmit={onSubmit} />);
     await userEvent.click(screen.getByText('5 rows × 3 columns'));
     expect(onSubmit).toHaveBeenCalledWith(true);
+  });
+
+  it('renders the rotated option first when rotatedFirst is true, and second when false', () => {
+    const onSubmit = vi.fn();
+    const roundFirst = { skillId: 'commute-spin' as const, a: 3, b: 5, rotatedFirst: true };
+    const { unmount } = render(<CommuteSpinGame round={roundFirst} onSubmit={onSubmit} />);
+    expect(screen.getByTestId('word-problem-option-rotated')).toBeInTheDocument();
+    const firstOptions = screen.getAllByTestId(/word-problem-option-/);
+    expect(firstOptions[0]).toHaveAttribute('data-testid', 'word-problem-option-rotated');
+    unmount();
+
+    const roundSecond = { skillId: 'commute-spin' as const, a: 3, b: 5, rotatedFirst: false };
+    render(<CommuteSpinGame round={roundSecond} onSubmit={onSubmit} />);
+    const secondOptions = screen.getAllByTestId(/word-problem-option-/);
+    expect(secondOptions[0]).toHaveAttribute('data-testid', 'word-problem-option-unrotated');
   });
 });
 

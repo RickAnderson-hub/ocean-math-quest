@@ -105,6 +105,28 @@ describe('persistence', () => {
     expect(Object.values(state.coveSkills)).toHaveLength(8);
   });
 
+  it('fills in missing coveSkills keys when a v2 save has a partial coveSkills object', () => {
+    const v2 = {
+      version: 2,
+      profile: { name: 'Explorer', muted: false },
+      facts: {},
+      sessions: [],
+      coveGateExempt: false,
+      coveSkills: {
+        'when-to-multiply': { recentCorrect: [true, true, true, true, true], mastered: true },
+      },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(v2));
+    const state = loadState();
+    expect(Object.keys(state.coveSkills)).toHaveLength(8);
+    expect(state.coveSkills['when-to-multiply']).toEqual({
+      recentCorrect: [true, true, true, true, true],
+      mastered: true,
+    });
+    expect(state.coveSkills['build-array']).toEqual({ recentCorrect: [], mastered: false });
+    expect(state.coveSkills['commute-spin'].mastered).toBe(false);
+  });
+
   it('importStateJson accepts a v1 backup and migrates it', () => {
     const v1 = {
       version: 1,

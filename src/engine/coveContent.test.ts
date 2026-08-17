@@ -40,15 +40,42 @@ describe('generateRound', () => {
   });
 
   it('generates a commute-spin round with two distinct factors', () => {
-    const round = generateRound('commute-spin', fixedRng(0.99, 0.99)) as { a: number; b: number };
+    const round = generateRound('commute-spin', fixedRng(0.99, 0.99, 0.1)) as { a: number; b: number };
     expect(round.a).not.toBe(round.b);
   });
 
-  it('generates a commute-solve round with two options sharing the correct product', () => {
-    const round = generateRound('commute-solve', fixedRng(0.2, 0.6, 0.3)) as CommuteSolveRound;
-    expect(round.optionA.product).toBe(round.correctProduct);
-    expect(round.optionB.product).toBe(round.correctProduct);
-    expect(round.optionC.product).not.toBe(round.correctProduct);
+  it('generates a commute-solve round with exactly two options sharing the correct product', () => {
+    const round = generateRound('commute-solve', fixedRng(0.2, 0.6, 0.3, 0.5, 0.5, 0.5)) as CommuteSolveRound;
+    const options = [round.optionA, round.optionB, round.optionC];
+    const matching = options.filter(o => o.product === round.correctProduct);
+    const distractors = options.filter(o => o.product !== round.correctProduct);
+    expect(matching.length).toBe(2);
+    expect(distractors.length).toBe(1);
+  });
+
+  it('varies which slot holds the commute-solve distractor across different rng draws', () => {
+    const distractorSlots = new Set<string>();
+    for (let seed = 0; seed < 20; seed++) {
+      const rngValues = [0.2, 0.6, 0.3, (seed * 0.13) % 1, (seed * 0.37) % 1, (seed * 0.53) % 1];
+      const round = generateRound('commute-solve', fixedRng(...rngValues)) as CommuteSolveRound;
+      const options = [
+        { slot: 'A', ...round.optionA },
+        { slot: 'B', ...round.optionB },
+        { slot: 'C', ...round.optionC },
+      ];
+      const distractor = options.find(o => o.product !== round.correctProduct);
+      if (distractor) distractorSlots.add(distractor.slot);
+    }
+    expect(distractorSlots.size).toBe(3);
+  });
+
+  it('varies which position the correctly-rotated commute-spin option occupies across different rng draws', () => {
+    const rotatedFirstValues = new Set<boolean>();
+    for (let seed = 0; seed < 20; seed++) {
+      const round = generateRound('commute-spin', fixedRng(0.1, 0.9, (seed * 0.23) % 1)) as { rotatedFirst: boolean };
+      rotatedFirstValues.add(round.rotatedFirst);
+    }
+    expect(rotatedFirstValues.size).toBe(2);
   });
 
   it('generates an equivalent-facts round with a genuine alternate factor pair', () => {
