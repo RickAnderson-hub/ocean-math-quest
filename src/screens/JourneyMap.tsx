@@ -1,14 +1,18 @@
 import { currentUnlockedZone, isZoneMastered, ZONES } from '../engine/zones';
+import { isCoveMastered, isTableZonesUnlocked } from '../engine/coveEngine';
 import { useAppState } from '../store/AppStateContext';
 import './JourneyMap.css';
 
 interface JourneyMapProps {
   onPlay: (table: number) => void;
+  onPlayCove: () => void;
   onOpenParentCorner: () => void;
 }
 
-export function JourneyMap({ onPlay, onOpenParentCorner }: JourneyMapProps) {
+export function JourneyMap({ onPlay, onPlayCove, onOpenParentCorner }: JourneyMapProps) {
   const { state } = useAppState();
+  const coveMastered = isCoveMastered(state.coveSkills);
+  const tableZonesUnlocked = isTableZonesUnlocked(state.coveSkills, state.coveGateExempt);
   const unlocked = currentUnlockedZone(state.facts);
 
   return (
@@ -25,11 +29,28 @@ export function JourneyMap({ onPlay, onOpenParentCorner }: JourneyMapProps) {
         </button>
       </header>
       <ol className="dive-path">
+        <li
+          key="arrays-cove"
+          data-testid="zone-arrays-cove"
+          className={`dive-node dive-node--left dive-node--${coveMastered ? 'mastered' : 'current'}`}
+        >
+          <div className="dive-node__card">
+            <span className="dive-node__label">Arrays Cove</span>
+            {coveMastered && (
+              <span data-testid="cove-badge" className="dive-node__creature">
+                Toolkit unlocked!
+              </span>
+            )}
+            <button type="button" className="dive-node__action" onClick={onPlayCove}>
+              {coveMastered ? 'Replay' : 'Play'}
+            </button>
+          </div>
+        </li>
         {ZONES.map((zone, i) => {
           const mastered = isZoneMastered(zone.table, state.facts);
-          const isCurrent = zone.table === unlocked;
-          const isLocked = zone.table > unlocked;
-          const side = i % 2 === 0 ? 'left' : 'right';
+          const isCurrent = tableZonesUnlocked && zone.table === unlocked;
+          const isLocked = !tableZonesUnlocked || zone.table > unlocked;
+          const side = (i + 1) % 2 === 0 ? 'left' : 'right';
           const status = isLocked ? 'locked' : isCurrent ? 'current' : 'mastered';
 
           return (
