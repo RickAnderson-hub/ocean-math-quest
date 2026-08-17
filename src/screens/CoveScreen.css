@@ -1,0 +1,29 @@
+.cove-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.cove-screen__header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.cove-screen__card {
+  width: 100%;
+  max-width: 32rem;
+  display: flex;
+  justify-content: center;
+}
+
+.cove-screen__card.correct {
+  outline: 3px solid #2fae5c;
+}
+
+.cove-screen__card.wrong {
+  outline: 3px solid #d9534f;
+}
