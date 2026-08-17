@@ -30,7 +30,10 @@ function computeConceptMastery(recentCorrect: boolean[]): boolean {
 
 export function recordSkillAttempt(skillState: ConceptSkillState, correct: boolean): ConceptSkillState {
   const recentCorrect = [...skillState.recentCorrect, correct].slice(-MAX_CONCEPT_ATTEMPTS_HISTORY);
-  return { recentCorrect, mastered: computeConceptMastery(recentCorrect) };
+  return {
+    recentCorrect,
+    mastered: skillState.mastered || computeConceptMastery(recentCorrect),
+  };
 }
 
 export function isCoveMastered(coveSkills: Record<ConceptSkillId, ConceptSkillState>): boolean {

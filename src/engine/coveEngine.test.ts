@@ -57,6 +57,18 @@ describe('recordSkillAttempt', () => {
     expect(s.recentCorrect).toHaveLength(20);
     expect(s.mastered).toBe(true);
   });
+
+  it('mastery is sticky: once achieved, a wrong answer does not reset mastered flag', () => {
+    let s = state([]);
+    for (let i = 0; i < 5; i++) {
+      s = recordSkillAttempt(s, true);
+    }
+    expect(s.mastered).toBe(true);
+    // Now fail an attempt (e.g., on replay/review)
+    s = recordSkillAttempt(s, false);
+    // Mastery should remain true (sticky/latched)
+    expect(s.mastered).toBe(true);
+  });
 });
 
 describe('isCoveMastered', () => {
