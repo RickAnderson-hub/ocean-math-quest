@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { AppStateProvider } from './store/AppStateContext';
 import { JourneyMap } from './screens/JourneyMap';
+import { CoveScreen } from './screens/CoveScreen';
+import { CoveSessionResults } from './screens/CoveSessionResults';
 import { DrillScreen } from './screens/DrillScreen';
 import { SessionResults } from './screens/SessionResults';
 import { ParentCorner } from './screens/ParentCorner';
-import { SessionSummary } from './storage/schema';
+import { CoveSessionSummary, SessionSummary } from './storage/schema';
 
 type Screen =
   | { name: 'map' }
+  | { name: 'cove' }
+  | { name: 'cove-results'; summary: CoveSessionSummary }
   | { name: 'drill'; table: number }
   | { name: 'results'; summary: SessionSummary }
   | { name: 'parent' };
@@ -20,7 +24,18 @@ function AppShell() {
       return (
         <JourneyMap
           onPlay={table => setScreen({ name: 'drill', table })}
+          onPlayCove={() => setScreen({ name: 'cove' })}
           onOpenParentCorner={() => setScreen({ name: 'parent' })}
+        />
+      );
+    case 'cove':
+      return <CoveScreen onComplete={summary => setScreen({ name: 'cove-results', summary })} />;
+    case 'cove-results':
+      return (
+        <CoveSessionResults
+          summary={screen.summary}
+          onPlayAgain={() => setScreen({ name: 'cove' })}
+          onHome={() => setScreen({ name: 'map' })}
         />
       );
     case 'drill':
